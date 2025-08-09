@@ -1,107 +1,93 @@
-"""
-
-Created on 2025/7/29 04:44
-@author: 18310
-
-"""
-
-"""
-generate_dataset.py
-
-功能说明：
-- 遍历 nnUNet 的 imagesTr 和 labelsTr（.nii.gz 格式）
-- 每一帧图像是否含有 abdomen（标签中有 1 或 2） → 二分类标签（0/1）
-- 保存帧为 PNG 图像，并输出 frame_labels.csv
-
-依赖库：
-pip install nibabel opencv-python tqdm
-"""
-
 import os
-import nibabel as nib
 import numpy as np
-import cv2
+import SimpleITK as sitk
 import csv
+from pathlib import Path
 from tqdm import tqdm
 
-# ====================== 配置部分 ======================
-imagesTr_dir = r"D:\nnUNet\nnUNet_raw_data_base\Dataset300_ACOptimalSuboptimal\imagesTr"
-labelsTr_dir = r"D:\nnUNet\nnUNet_raw_data_base\Dataset300_ACOptimalSuboptimal\labelsTr"
-output_img_dir = r"E:\Data Science Master Project-code\ACOUSLIC-AI-baseline\frame_images"
-csv_path = r"E:\Data Science Master Project-code\ACOUSLIC-AI-baseline\src\frame_selector_resnet50_a3\frame_labels.csv"
+# ====================== 配置路径 ======================
+mha_img_dir = Path(r"D:/Data_Science_project-data/acouslic-ai-train-set/images/stacked-fetal-ultrasound")
+mha_label_dir = Path(r"D:/Data_Science_project-data/acouslic-ai-train-set/masks/stacked_fetal_abdomen")
+output_img_dir = Path(r"D:/Resnet/imagesTr")
+output_lbl_dir = Path(r"D:/Resnet/labelsTr")
+csv_path = Path(r"E:/Data Science Master Project-code/ACOUSLIC-AI-baseline/src/frame_selector_resnet50_a3/frame_labels.csv")
 
-os.makedirs(output_img_dir, exist_ok=True)
+output_img_dir.mkdir(parents=True, exist_ok=True)
+output_lbl_dir.mkdir(parents=True, exist_ok=True)
 
-# ====================== 主处理流程 ======================
+MAX_FILES = 100  # 控制处理的 .mha 文件数量
+
+# ====================== 主流程 ======================
+all_mha_files = sorted(mha_img_dir.glob("*.mha"))[:MAX_FILES]
 frame_records = []
 total_abdomen, total_frames = 0, 0
 skip_cases = 0
 
-for fname in tqdm(os.listdir(imagesTr_dir), desc="正在处理样本"):
-    if not fname.endswith(".nii.gz") or "_0000" not in fname:
-        continue
+for mha_path in tqdm(all_mha_files, desc="处理样本"):
+    case_id = mha_path.stem
+    label_path = mha_label_dir / f"{case_id}.mha"
 
-    case_id = fname.replace("_0000.nii.gz", "")
-    img_path = os.path.join(imagesTr_dir, fname)
-    lbl_path = os.path.join(labelsTr_dir, f"{case_id}.nii.gz")
-
-    if not os.path.exists(lbl_path):
-        print(f"缺失标签：{lbl_path}")
+    if not label_path.exists():
+        print(f"[跳过] 缺失标签：{label_path}")
         skip_cases += 1
         continue
 
     try:
-        img = np.asarray(nib.load(img_path).dataobj)  # shape: (H, W, D)
-        lbl = np.asarray(nib.load(lbl_path).dataobj).astype(np.uint8)  # 转为整数
+        img_3d = sitk.ReadImage(str(mha_path))
+        lbl_3d = sitk.ReadImage(str(label_path))
+        img_np = sitk.GetArrayFromImage(img_3d)
+        lbl_np = sitk.GetArrayFromImage(lbl_3d).astype(np.uint8)
     except Exception as e:
-        print(f"读取失败：{case_id}, 错误：{e}")
+        print(f"[跳过] {case_id} 读取失败: {e}")
         skip_cases += 1
         continue
 
-    D = img.shape[2]
-    for i in range(D):
-        img_slice = img[:, :, i]
-        lbl_slice = lbl[:, :, i]
+    spacing = img_3d.GetSpacing()[:2]
+    origin = img_3d.GetOrigin()[:2]
+    direction_full = img_3d.GetDirection()
+    if len(direction_full) == 9:
+        direction_2d = (direction_full[0], direction_full[1], direction_full[3], direction_full[4])
+    else:
+        direction_2d = (1.0, 0.0, 0.0, 1.0)
 
-        # 腹部标注判断（仅考虑标签 1 和 2）
-        is_abdomen = int(np.any((lbl_slice == 1) | (lbl_slice == 2)))
+    for i in range(img_np.shape[0]):
+        img_slice_np = img_np[i]
+        lbl_slice_np = lbl_np[i]
+
+        is_abdomen = int(np.any(np.isin(lbl_slice_np, [1, 2])))
         total_abdomen += is_abdomen
         total_frames += 1
 
-        # 图像归一化为 0–255
-        min_val, max_val = np.min(img_slice), np.max(img_slice)
-        if max_val - min_val < 1e-5:
-            img_norm = np.zeros_like(img_slice, dtype=np.uint8)
-        else:
-            img_norm = ((img_slice - min_val) / (max_val - min_val + 1e-8) * 255).astype(np.uint8)
+        img_slice_itk = sitk.GetImageFromArray(img_slice_np)
+        lbl_slice_itk = sitk.GetImageFromArray(lbl_slice_np)
 
-        filename = f"{case_id}_{i:04d}.png"
-        cv2.imwrite(os.path.join(output_img_dir, filename), img_norm)
-        frame_records.append([filename, is_abdomen])
+        img_slice_itk.SetSpacing(spacing)
+        img_slice_itk.SetOrigin(origin)
+        img_slice_itk.SetDirection(direction_2d)
 
-# 写入标签 CSV 文件
-with open(csv_path, "w", newline="") as f:
+        lbl_slice_itk.SetSpacing(spacing)
+        lbl_slice_itk.SetOrigin(origin)
+        lbl_slice_itk.SetDirection(direction_2d)
+
+        out_img_name = f"{case_id}_{i:04d}_0000.nii.gz"
+        out_lbl_name = f"{case_id}_{i:04d}.nii.gz"
+
+        sitk.WriteImage(img_slice_itk, str(output_img_dir / out_img_name))
+        sitk.WriteImage(lbl_slice_itk, str(output_lbl_dir / out_lbl_name))
+
+        frame_records.append([out_img_name, is_abdomen])
+
+# ====================== 写入 CSV 标签 ======================
+with open(csv_path, "w", newline="", encoding="utf-8") as f:
     writer = csv.writer(f)
     writer.writerow(["filename", "label"])
     writer.writerows(frame_records)
 
-# ====================== 完成信息 ======================
-print("\n帧图像提取完成")
-print(f"图像保存目录：{output_img_dir}")
-print(f"标签 CSV 文件：{csv_path}")
-print(f"总帧数：{total_frames}，其中腹部帧（label=1）数量：{total_abdomen}")
-print(f"跳过样本数量（无标签或错误）：{skip_cases}")
-
-
-# import nibabel as nib
-# import numpy as np
-#
-# label_path = r"D:\nnUNet\nnUNet_raw_data_base\Dataset300_ACOptimalSuboptimal\labelsTr\0d0a3298-a9c6-43c3-a9e3-df3a9c0afa06.nii.gz"
-# label_img = nib.load(label_path)
-# label_data = label_img.get_fdata()
-#
-# # 强制转为整数
-# label_int = label_data.astype(np.uint8)
-# unique_vals = np.unique(label_int)
-#
-# print("标签值种类（整数转换后）:", unique_vals)
+# ====================== 汇总输出 ======================
+print("\n=== 完成 ===")
+print(f"总帧数：{total_frames}")
+print(f"含标注帧数（label=1）：{total_abdomen}")
+print(f"跳过样本数（无标签或失败）：{skip_cases}")
+print(f"图像输出目录：{output_img_dir}")
+print(f"标签输出目录：{output_lbl_dir}")
+print(f"CSV 路径：{csv_path}")

@@ -1,87 +1,81 @@
-"""
-
-Created on 2025/7/9 00:31
-@author: 18310
-
-"""
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-remove_black_slices.py
-
-遍历一批 .mha 体数据，去掉全黑帧，并保存新的 image 与 mask。
-"""
-
 import os
-from pathlib import Path
-import SimpleITK as sitk
+import shutil
+import json
 import numpy as np
+import SimpleITK as sitk
+import pickle
+from pathlib import Path
+from random import shuffle
 
-def process_case(img_path: Path, mask_path: Path, out_img_path: Path, out_mask_path: Path):
-    """
-    读取 img_path，对全零 slice 进行过滤，并写出到 out_img_path。
-    如果 mask_path 存在，则同样过滤并写出到 out_mask_path。
-    """
-    # 读取 image
-    img = sitk.ReadImage(str(img_path))
-    arr = sitk.GetArrayFromImage(img)  # numpy array with shape (D, H, W)
+# === 配置路径 ===
+DATASET_NAME = "Dataset300_ACOptimalSuboptimal2D"
+RAW_BASE = Path("D:/nnUNet/nnUNet_raw_data_base")
+PREPROCESSED_BASE = Path("D:/nnUNet/nnUNet_preprocessed")
+imagesTr = RAW_BASE / DATASET_NAME / "imagesTr"
+labelsTr = RAW_BASE / DATASET_NAME / "labelsTr"
+imagesTs = RAW_BASE / DATASET_NAME / "imagesTs"
+labelsTs = RAW_BASE / DATASET_NAME / "labelsTs"
+dataset_json_path = RAW_BASE / DATASET_NAME / "dataset.json"
+splits_path = PREPROCESSED_BASE / DATASET_NAME / "splits_final.pkl"
+MAX_NUM = 10  # 从验证集抽取多少帧用于推理测试
 
-    # 找到哪些 slice 不是全零
-    non_black = np.any(arr != 0, axis=(1, 2))  # bool array, length D
+# === 创建测试文件夹
+imagesTs.mkdir(parents=True, exist_ok=True)
+labelsTs.mkdir(parents=True, exist_ok=True)
 
-    # 如果所有 slice 都全零，跳过
-    if not np.any(non_black):
-        print(f"[skip-all-black] {img_path.name} 全部切片均为 0，跳过")
-    else:
-        # 过滤并写出 image
-        arr_filt = arr[non_black]
-        img_filt = sitk.GetImageFromArray(arr_filt)
-        img_filt.SetSpacing(img.GetSpacing())
-        img_filt.SetOrigin(img.GetOrigin())
-        img_filt.SetDirection(img.GetDirection())
-        sitk.WriteImage(img_filt, str(out_img_path), useCompression=True)
-        print(f"[saved-img] {out_img_path}")
+# === 加载 splits_final.pkl 获取验证集 ID
+with open(splits_path, "rb") as f:
+    splits = pickle.load(f)
+val_ids = splits[0]["val"]  # 使用第一个fold
 
-    # 处理 mask（如果存在）
-    if mask_path.exists():
-        mask = sitk.ReadImage(str(mask_path))
-        m_arr = sitk.GetArrayFromImage(mask)
-        # 使用同样的 non_black 索引过滤 mask
-        m_filt = m_arr[non_black]
-        mask_filt = sitk.GetImageFromArray(m_filt)
-        mask_filt.SetSpacing(mask.GetSpacing())
-        mask_filt.SetOrigin(mask.GetOrigin())
-        mask_filt.SetDirection(mask.GetDirection())
-        sitk.WriteImage(mask_filt, str(out_mask_path), useCompression=True)
-        print(f"[saved-msk] {out_mask_path}")
-    else:
-        print(f"[warn] 未找到 mask：{mask_path.name}，只处理 image")
+print(f"验证集包含 {len(val_ids)} 个病例")
 
-def main():
-    # TODO: 根据实际路径修改下面三个目录
-    IMAGES_DIR      = Path(r"D:\nnUNet\nnUNet_raw_data_base\Dataset300_ACOptimalSuboptimal\imagesTr")
-    MASKS_DIR       = Path(r"D:\nnUNet\nnUNet_raw_data_base\Dataset300_ACOptimalSuboptimal\labelsTr")
-    OUT_IMAGES_DIR  = Path(r"D:\processed\imagesTr_nonblack")
-    OUT_MASKS_DIR   = Path(r"D:\processed\labelsTr_nonblack")
+# === 搜集验证集中的所有图像切片路径
+candidate_slices = []
+for cid in val_ids:
+    img_path = imagesTr / f"{cid}_0000.nii.gz"
+    label_path = labelsTr / f"{cid}.nii.gz"
+    if not (img_path.exists() and label_path.exists()):
+        continue
 
-    # 创建输出目录
-    OUT_IMAGES_DIR.mkdir(parents=True, exist_ok=True)
-    OUT_MASKS_DIR.mkdir(parents=True, exist_ok=True)
+    # 加载标签图像并筛选出有标注的帧索引
+    label_img = sitk.GetArrayFromImage(sitk.ReadImage(str(label_path)))
+    for i in range(label_img.shape[0]):
+        if np.count_nonzero(label_img[i]) > 0:
+            candidate_slices.append((cid, i))
 
-    # 遍历所有 .mha
-    img_files = sorted(IMAGES_DIR.glob("*.mha"))
-    print(f"Found {len(img_files)} image files. Processing...")
+print(f"验证集中共找到 {len(candidate_slices)} 张有标注的帧")
 
-    for idx, img_path in enumerate(img_files, 1):
-        case_id = img_path.stem  # e.g. 'volume000'
-        mask_path = MASKS_DIR / f"{case_id}.mha"
-        out_img_path  = OUT_IMAGES_DIR / img_path.name
-        out_mask_path = OUT_MASKS_DIR  / f"{case_id}.mha"
+# === 打乱并抽取推理帧
+shuffle(candidate_slices)
+selected_slices = candidate_slices[:MAX_NUM]
+print(f"选中 {len(selected_slices)} 张帧用于推理测试")
 
-        print(f"[{idx}/{len(img_files)}] Processing case {case_id}...")
-        process_case(img_path, mask_path, out_img_path, out_mask_path)
+selected_ids = []
 
-    print("All done.")
+for cid, slice_idx in selected_slices:
+    # 从原始图像和标签中读取该帧
+    img_path = imagesTr / f"{cid}_0000.nii.gz"
+    label_path = labelsTr / f"{cid}.nii.gz"
+    img_arr = sitk.GetArrayFromImage(sitk.ReadImage(str(img_path)))
+    lbl_arr = sitk.GetArrayFromImage(sitk.ReadImage(str(label_path)))
 
-if __name__ == "__main__":
-    main()
+    frame_img = sitk.GetImageFromArray(img_arr[slice_idx][np.newaxis, :, :])
+    frame_lbl = sitk.GetImageFromArray(lbl_arr[slice_idx][np.newaxis, :, :])
+
+    new_name = f"{cid}_{slice_idx:04d}"
+    sitk.WriteImage(frame_img, str(imagesTs / f"{new_name}_0000.nii.gz"), useCompression=True)
+    sitk.WriteImage(frame_lbl, str(labelsTs / f"{new_name}.nii.gz"), useCompression=True)
+    selected_ids.append(new_name)
+    print(f"保存推理帧: {new_name}")
+
+# === 更新 dataset.json 中 test_cases 字段
+with open(dataset_json_path, "r", encoding="utf-8") as f:
+    dataset = json.load(f)
+
+dataset["test_cases"] = selected_ids
+
+with open(dataset_json_path, "w", encoding="utf-8") as f:
+    json.dump(dataset, f, indent=2)
+
+print(f"推理测试集构建完成，更新了 dataset.json 中 test_cases 字段")

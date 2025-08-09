@@ -12,18 +12,25 @@ import nibabel as nib
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
-# ---------- 配置区域 ----------
-SUMMARY_PATH = r"D:\nnUNet\results\Dataset303_Top50AnnotatedSubset\MyTrainer__nnUNetPlans__3d_fullres\fold_0\validation\summary.json"
+# ---------- 全量数据实验 ----------
+SUMMARY_PATH = r"D:\nnUNet\results\Dataset300_ACOptimalSuboptimal2D(data_split_correct)\MyTrainer__nnUNetPlans__2d\fold_0\validation\summary.json"
 TOP_K = 5  # 选择前几个Dice最好的case
-SAVE_DIR = r"D:\nnUNet\results\Dataset303_Top50AnnotatedSubset\MyTrainer__nnUNetPlans__3d_fullres\fold_0\visualizations_best_cases"
+SAVE_DIR = r"D:\nnUNet\results\Dataset300_ACOptimalSuboptimal2D(data_split_correct)\MyTrainer__nnUNetPlans__2d\fold_0\visualizations_best_cases"
 os.makedirs(SAVE_DIR, exist_ok=True)
 
-# # ----------- 配置区域 ----------------
-# SUMMARY_PATH = r"D:\nnUNet\results\Dataset047_ACOptimalSuboptimal_slice2000_2d\MyTrainer__nnUNetPlans__2d\fold_0\validation\summary.json"
+# # ----------- 2000例正样本实验 ----------------
+# SUMMARY_PATH = r"D:\nnUNet\results\Dataset050_AC_mha2d_top2000\MyTrainer__nnUNetPlans__2d\fold_0\validation\summary.json"
 # TOP_K = 5  # 选择前几个Dice最好的case
-# SAVE_DIR = r"D:\nnUNet\results\Dataset047_ACOptimalSuboptimal_slice2000_2d\MyTrainer__nnUNetPlans__2d\fold_0\visualizations_best_cases"
+# SAVE_DIR = r"D:\nnUNet\results\Dataset050_AC_mha2d_top2000\MyTrainer__nnUNetPlans__2d\fold_0\visualizations_best_cases"
 # os.makedirs(SAVE_DIR, exist_ok=True)
-# # ----------------------------
+# ----------------------------
+# # ---------- 云端路径配置 ----------
+# SUMMARY_PATH = "/home/ec2-user/nnUNet/nnUNet_results/Dataset050_AC_mha2d_top2000/MyTrainer__nnUNetPlans__2d/fold_0/validation/summary.json"
+# TOP_K = 5
+# SAVE_DIR = "/home/ec2-user/nnUNet/nnUNet_results/Dataset050_AC_mha2d_top2000/MyTrainer__nnUNetPlans__2d/fold_0/visualizations_best_cases"
+# os.makedirs(SAVE_DIR, exist_ok=True)
+
+# ---------- 加载 summary 文件 ----------
 
 # 加载 summary 文件
 with open(SUMMARY_PATH, 'r') as f:
@@ -32,6 +39,24 @@ with open(SUMMARY_PATH, 'r') as f:
 # 按Dice排序，选择top K
 cases = summary['metric_per_case']
 sorted_cases = sorted(cases, key=lambda x: x['metrics']['1']['Dice'], reverse=True)[:TOP_K]
+
+
+# ---------- 替换路径为本地 ----------
+for case in sorted_cases:
+    case["prediction_file"] = case["prediction_file"].replace(
+        "/home/ec2-user", "D:/"
+    )
+    case["reference_file"] = case["reference_file"].replace(
+        "/home/ec2-user", "D:/"
+    )
+ # ✅ 补充这一步，修正路径中 Dataset 名称 (optional)
+    case["prediction_file"] = case["prediction_file"].replace(
+        "Dataset300_ACOptimalSuboptimal2D/", "Dataset300_ACOptimalSuboptimal2D(data_split_correct)/"
+    )
+    case["reference_file"] = case["reference_file"].replace(
+        "Dataset300_ACOptimalSuboptimal2D/", "Dataset300_ACOptimalSuboptimal2D(data_split_correct)/"
+    )
+
 
 def visualize_case_multilabel(pred_path, gt_path, save_path, slice_idx=None):
     pred = nib.load(pred_path).get_fdata().astype(np.uint8)
@@ -63,12 +88,20 @@ def visualize_case_multilabel(pred_path, gt_path, save_path, slice_idx=None):
     fn2 = (gt_slice == 2) & (pred_slice != 2)
     fp2 = (gt_slice != 2) & (pred_slice == 2)
 
-    overlay[tp1] = [0, 255, 0]      # Green
-    overlay[fn1] = [255, 0, 0]      # Red
-    overlay[fp1] = [0, 0, 255]      # Blue
-    overlay[tp2] = [255, 255, 0]    # Yellow
-    overlay[fn2] = [255, 165, 0]    # Orange
-    overlay[fp2] = [128, 0, 128]    # Purple
+    # overlay[tp1] = [0, 255, 0]      # Green
+    # overlay[fn1] = [255, 0, 0]      # Red
+    # overlay[fp1] = [0, 0, 255]      # Blue
+    # overlay[tp2] = [255, 255, 0]    # Yellow
+    # overlay[fn2] = [255, 165, 0]    # Orange
+    # overlay[fp2] = [128, 0, 128]    # Purple
+
+    overlay[tp1] = [255, 255, 0]      # ✅ Green → 现在是 label=2 正确预测
+    overlay[fn1] = [255, 0, 0]      # ✅ Red → label=2 漏检
+    overlay[fp1] = [0, 0, 255]      # ✅ Blue → label=2 错报
+
+    overlay[tp2] =[0, 255, 0]    # Yellow → label=1 正确预测
+    overlay[fn2] = [255, 165, 0]    # Orange → label=1 漏检
+    overlay[fp2] = [128, 0, 128]    # Purple → label=1 错报
 
     # 显示
     fig, axes = plt.subplots(1, 3, figsize=(15, 5))
@@ -85,20 +118,29 @@ def visualize_case_multilabel(pred_path, gt_path, save_path, slice_idx=None):
         ax.axis('off')
 
     # 添加图例
-    import matplotlib.patches as mpatches
+
+    # legend_patches = [
+    #     mpatches.Patch(color=[0/255,255/255,0/255],   label="TP1 - Best Plane Correct"),
+    #     mpatches.Patch(color=[1,0,0],                 label="FN1 - Best Plane Missed"),
+    #     mpatches.Patch(color=[0,0,1],                 label="FP1 - Best Plane False"),
+    #     mpatches.Patch(color=[1,1,0],                 label="TP2 - Sub-Best Correct"),
+    #     mpatches.Patch(color=[1,165/255,0],           label="FN2 - Sub-Best Missed"),
+    #     mpatches.Patch(color=[128/255, 0, 128/255],   label="FP2 - Sub-Best False"),
+    # ]
     legend_patches = [
         mpatches.Patch(color=[0/255,255/255,0/255],   label="TP1 - Best Plane Correct"),
-        mpatches.Patch(color=[1,0,0],                 label="FN1 - Best Plane Missed"),
-        mpatches.Patch(color=[0,0,1],                 label="FP1 - Best Plane False"),
+        mpatches.Patch(color=[1,0,0],                 label="FN1 - Sub-Best Missed"),
+        mpatches.Patch(color=[0,0,1],                 label="FP1 - Sub-Best False"),
         mpatches.Patch(color=[1,1,0],                 label="TP2 - Sub-Best Correct"),
-        mpatches.Patch(color=[1,165/255,0],           label="FN2 - Sub-Best Missed"),
-        mpatches.Patch(color=[128/255, 0, 128/255],   label="FP2 - Sub-Best False"),
+        mpatches.Patch(color=[1,165/255,0],           label="FN2 - Best Plane Missed"),
+        mpatches.Patch(color=[128/255, 0, 128/255],   label="FP2 - Best Plane False"),
     ]
+
     axes[2].legend(handles=legend_patches, loc='lower right')
 
     plt.tight_layout()
-    plt.show()
     plt.savefig(save_path)
+    plt.show()
     plt.close()
 
 # ---------- 批量可视化 ----------
