@@ -1,0 +1,1198 @@
+D:\software\anaconda\envs\nucleus\python.exe H:\USSeg\ussegcodes\train.py 
+Loading data...
+train
+train
+val
+val
+Create model...
+使用transunet模型
+<================== Parameters ==================>
+model: TransUNet(
+  (encoder): Encoder(
+    (conv1): Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+    (norm1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (relu): ReLU(inplace=True)
+    (encoder1): EncoderBottleneck(
+      (downsample): Sequential(
+        (0): Conv2d(64, 128, kernel_size=(1, 1), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (conv1): Conv2d(64, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (norm1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (norm2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv3): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (norm3): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+    (encoder2): EncoderBottleneck(
+      (downsample): Sequential(
+        (0): Conv2d(128, 256, kernel_size=(1, 1), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (conv1): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (norm1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (norm2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv3): Conv2d(256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (norm3): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+    (encoder3): EncoderBottleneck(
+      (downsample): Sequential(
+        (0): Conv2d(256, 512, kernel_size=(1, 1), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (conv1): Conv2d(256, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (norm1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (norm2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv3): Conv2d(512, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (norm3): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+    (vit): ViT(
+      (projection): Linear(in_features=512, out_features=512, bias=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+      (transformer): TransformerEncoder(
+        (layer_blocks): ModuleList(
+          (0): TransformerEncoderBlock(
+            (multi_head_attention): MultiHeadAttention(
+              (qkv_layer): Linear(in_features=512, out_features=1536, bias=False)
+              (out_attention): Linear(in_features=512, out_features=512, bias=False)
+            )
+            (mlp): MLP(
+              (mlp_layers): Sequential(
+                (0): Linear(in_features=512, out_features=512, bias=True)
+                (1): GELU()
+                (2): Dropout(p=0.1, inplace=False)
+                (3): Linear(in_features=512, out_features=512, bias=True)
+                (4): Dropout(p=0.1, inplace=False)
+              )
+            )
+            (layer_norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (layer_norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (1): TransformerEncoderBlock(
+            (multi_head_attention): MultiHeadAttention(
+              (qkv_layer): Linear(in_features=512, out_features=1536, bias=False)
+              (out_attention): Linear(in_features=512, out_features=512, bias=False)
+            )
+            (mlp): MLP(
+              (mlp_layers): Sequential(
+                (0): Linear(in_features=512, out_features=512, bias=True)
+                (1): GELU()
+                (2): Dropout(p=0.1, inplace=False)
+                (3): Linear(in_features=512, out_features=512, bias=True)
+                (4): Dropout(p=0.1, inplace=False)
+              )
+            )
+            (layer_norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (layer_norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (2): TransformerEncoderBlock(
+            (multi_head_attention): MultiHeadAttention(
+              (qkv_layer): Linear(in_features=512, out_features=1536, bias=False)
+              (out_attention): Linear(in_features=512, out_features=512, bias=False)
+            )
+            (mlp): MLP(
+              (mlp_layers): Sequential(
+                (0): Linear(in_features=512, out_features=512, bias=True)
+                (1): GELU()
+                (2): Dropout(p=0.1, inplace=False)
+                (3): Linear(in_features=512, out_features=512, bias=True)
+                (4): Dropout(p=0.1, inplace=False)
+              )
+            )
+            (layer_norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (layer_norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (3): TransformerEncoderBlock(
+            (multi_head_attention): MultiHeadAttention(
+              (qkv_layer): Linear(in_features=512, out_features=1536, bias=False)
+              (out_attention): Linear(in_features=512, out_features=512, bias=False)
+            )
+            (mlp): MLP(
+              (mlp_layers): Sequential(
+                (0): Linear(in_features=512, out_features=512, bias=True)
+                (1): GELU()
+                (2): Dropout(p=0.1, inplace=False)
+                (3): Linear(in_features=512, out_features=512, bias=True)
+                (4): Dropout(p=0.1, inplace=False)
+              )
+            )
+            (layer_norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (layer_norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (4): TransformerEncoderBlock(
+            (multi_head_attention): MultiHeadAttention(
+              (qkv_layer): Linear(in_features=512, out_features=1536, bias=False)
+              (out_attention): Linear(in_features=512, out_features=512, bias=False)
+            )
+            (mlp): MLP(
+              (mlp_layers): Sequential(
+                (0): Linear(in_features=512, out_features=512, bias=True)
+                (1): GELU()
+                (2): Dropout(p=0.1, inplace=False)
+                (3): Linear(in_features=512, out_features=512, bias=True)
+                (4): Dropout(p=0.1, inplace=False)
+              )
+            )
+            (layer_norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (layer_norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (5): TransformerEncoderBlock(
+            (multi_head_attention): MultiHeadAttention(
+              (qkv_layer): Linear(in_features=512, out_features=1536, bias=False)
+              (out_attention): Linear(in_features=512, out_features=512, bias=False)
+            )
+            (mlp): MLP(
+              (mlp_layers): Sequential(
+                (0): Linear(in_features=512, out_features=512, bias=True)
+                (1): GELU()
+                (2): Dropout(p=0.1, inplace=False)
+                (3): Linear(in_features=512, out_features=512, bias=True)
+                (4): Dropout(p=0.1, inplace=False)
+              )
+            )
+            (layer_norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (layer_norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (6): TransformerEncoderBlock(
+            (multi_head_attention): MultiHeadAttention(
+              (qkv_layer): Linear(in_features=512, out_features=1536, bias=False)
+              (out_attention): Linear(in_features=512, out_features=512, bias=False)
+            )
+            (mlp): MLP(
+              (mlp_layers): Sequential(
+                (0): Linear(in_features=512, out_features=512, bias=True)
+                (1): GELU()
+                (2): Dropout(p=0.1, inplace=False)
+                (3): Linear(in_features=512, out_features=512, bias=True)
+                (4): Dropout(p=0.1, inplace=False)
+              )
+            )
+            (layer_norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (layer_norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (7): TransformerEncoderBlock(
+            (multi_head_attention): MultiHeadAttention(
+              (qkv_layer): Linear(in_features=512, out_features=1536, bias=False)
+              (out_attention): Linear(in_features=512, out_features=512, bias=False)
+            )
+            (mlp): MLP(
+              (mlp_layers): Sequential(
+                (0): Linear(in_features=512, out_features=512, bias=True)
+                (1): GELU()
+                (2): Dropout(p=0.1, inplace=False)
+                (3): Linear(in_features=512, out_features=512, bias=True)
+                (4): Dropout(p=0.1, inplace=False)
+              )
+            )
+            (layer_norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (layer_norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+      )
+    )
+    (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (norm2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  )
+  (decoder): Decoder(
+    (decoder1): DecoderBottleneck(
+      (upsample): Upsample(scale_factor=2.0, mode=bilinear)
+      (layer): Sequential(
+        (0): Conv2d(768, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+        (3): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (4): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (5): ReLU(inplace=True)
+      )
+    )
+    (decoder2): DecoderBottleneck(
+      (upsample): Upsample(scale_factor=2.0, mode=bilinear)
+      (layer): Sequential(
+        (0): Conv2d(320, 96, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+        (3): Conv2d(96, 96, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (4): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (5): ReLU(inplace=True)
+      )
+    )
+    (decoder3): DecoderBottleneck(
+      (upsample): Upsample(scale_factor=2.0, mode=bilinear)
+      (layer): Sequential(
+        (0): Conv2d(160, 48, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(48, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+        (3): Conv2d(48, 48, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (4): BatchNorm2d(48, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (5): ReLU(inplace=True)
+      )
+    )
+    (decoder4): DecoderBottleneck(
+      (upsample): Upsample(scale_factor=2.0, mode=bilinear)
+      (layer): Sequential(
+        (0): Conv2d(48, 12, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(12, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+        (3): Conv2d(12, 12, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (4): BatchNorm2d(12, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (5): ReLU(inplace=True)
+      )
+    )
+    (conv1): Conv2d(12, 3, kernel_size=(1, 1), stride=(1, 1))
+  )
+)
+dataset: mydata(training=5342, validation=1278)
+batch_size: 8
+batch_num: 668
+epoch: 30
+loss_function: LovaszLoss()
+optimizer: Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    eps: 1e-08
+    lr: 0.001
+    maximize: False
+    weight_decay: 0
+)
+tensorboard_log_path: H:\USSeg\trainingrecords\log\mydata_transunet_Lovasz
+<================================================>
+Remove H:\USSeg\trainingrecords\log\mydata_transunet_Lovasz
+Create H:\USSeg\trainingrecords\log\mydata_transunet_Lovasz
+Start training...
+-------------------------------------- Training 1 --------------------------------------
+H:\USSeg\ussegcodes\train.py:175: DeprecationWarning: `np.int` is a deprecated alias for the builtin `int`. To silence this warning, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+  predictions = torch.max(outputs, dim=1)[1].cpu().numpy().astype(np.int)
+H:\USSeg\ussegcodes\train.py:177: DeprecationWarning: `np.int` is a deprecated alias for the builtin `int`. To silence this warning, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+  labels = labels.cpu().numpy().astype(np.int)
+Training: Epoch[001/030] Iteration[100/668] Loss: 0.0926 
+Training: Epoch[001/030] Iteration[200/668] Loss: 0.0857 
+Training: Epoch[001/030] Iteration[300/668] Loss: 0.0823 
+Training: Epoch[001/030] Iteration[400/668] Loss: 0.0811 
+Training: Epoch[001/030] Iteration[500/668] Loss: 0.0802 
+Training: Epoch[001/030] Iteration[600/668] Loss: 0.0802 
+Confusion Matrix:
+[[727760731  59667885 430254469]
+ [   968100  12957864  46757995]
+ [  3981897  22836614  95187693]]
+IoU: [0.5952405  0.09049517 0.15890605]
+DSC: [0.74627055 0.16597079 0.27423457]
+PC: [0.99324427 0.13573793 0.16635384]
+SE: [0.59766021 0.2135303  0.78018732]
+SP: [0.972904961500308, 0.9384151984512881, 0.6268579777311594]
+F1: [0.74627055 0.16597079 0.27423457]
+Training: MIoU: 0.2815, MDSC: 0.3955, MPC: 0.4318, AC: 0.5969, MSE: 0.5305, MSP: 0.8461, MF1: 0.3955
+-------------------------------------- Validation 1 ------------------------------------
+H:\USSeg\ussegcodes\train.py:237: DeprecationWarning: `np.int` is a deprecated alias for the builtin `int`. To silence this warning, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+  predictions = torch.max(outputs, dim=1)[1].cpu().numpy().astype(np.int)
+H:\USSeg\ussegcodes\train.py:238: DeprecationWarning: `np.int` is a deprecated alias for the builtin `int`. To silence this warning, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+  labels = labels.cpu().numpy().astype(np.int)
+Confusion Matrix:
+[[217140444    661456  79431882]
+ [   761301     32758  12005846]
+ [  2102640     44532  22839173]]
+IoU: [0.72356578 0.00242546 0.19617226]
+DSC: [0.83961493 0.00483918 0.32800001]
+PC: [0.98698235 0.04434271 0.19985818]
+SE: [0.73053757 0.00255924 0.91406618]
+SP: [0.9242067947996957, 0.9978089885117574, 0.7050716362960906]
+F1: [0.83961493 0.00483918 0.32800001]
+Training: MIoU: 0.3074, MDSC: 0.3908, MPC: 0.4104, AC: 0.7164, MSE: 0.5491, MSP: 0.8757, MF1: 0.3908
+Save model at H:\USSeg\trainingrecords\checkpoint\mydata_transunet_Lovasz\mydata_transunet_Lovasz_0.3908_0.pkl.
+-------------------------------------- Training 2 --------------------------------------
+Training: Epoch[002/030] Iteration[100/668] Loss: 0.0790 
+Training: Epoch[002/030] Iteration[200/668] Loss: 0.0784 
+Training: Epoch[002/030] Iteration[300/668] Loss: 0.0784 
+Training: Epoch[002/030] Iteration[400/668] Loss: 0.0779 
+Training: Epoch[002/030] Iteration[500/668] Loss: 0.0776 
+Training: Epoch[002/030] Iteration[600/668] Loss: 0.0775 
+Confusion Matrix:
+[[869765070  83694585 264223430]
+ [  2045939  20816551  37821469]
+ [  8120893  36961596  76923715]]
+IoU: [0.70836432 0.11479285 0.18140199]
+DSC: [0.82928953 0.20594471 0.30709613]
+PC: [0.98844589 0.14714179 0.20298176]
+SE: [0.71427868 0.34303218 0.63049019]
+SP: [0.9443493189066781, 0.9099371906674997, 0.7637259968350686]
+F1: [0.82928953 0.20594471 0.30709613]
+Training: MIoU: 0.3349, MDSC: 0.4474, MPC: 0.4462, AC: 0.6909, MSE: 0.5626, MSP: 0.8727, MF1: 0.4474
+-------------------------------------- Validation 2 ------------------------------------
+Confusion Matrix:
+[[197353445  80437082  19443255]
+ [   189091  12338536    272278]
+ [   577128  23735234    673983]]
+IoU: [0.66225988 0.10548262 0.01507729]
+DSC: [0.7968187  0.19083542 0.02970668]
+PC: [0.99613254 0.10590032 0.03305537]
+SE: [0.66396708 0.96395528 0.02697405]
+SP: [0.9797222799298687, 0.6767045033161445, 0.9364084168053648]
+F1: [0.7968187  0.19083542 0.02970668]
+Training: MIoU: 0.2609, MDSC: 0.3391, MPC: 0.3784, AC: 0.6279, MSE: 0.5516, MSP: 0.8643, MF1: 0.3391
+-------------------------------------- Training 3 --------------------------------------
+Training: Epoch[003/030] Iteration[100/668] Loss: 0.0773 
+Training: Epoch[003/030] Iteration[200/668] Loss: 0.0765 
+Training: Epoch[003/030] Iteration[300/668] Loss: 0.0760 
+Training: Epoch[003/030] Iteration[400/668] Loss: 0.0761 
+Training: Epoch[003/030] Iteration[500/668] Loss: 0.0762 
+Training: Epoch[003/030] Iteration[600/668] Loss: 0.0763 
+Confusion Matrix:
+[[929241866  68433470 220007749]
+ [  2453011  20413502  37817446]
+ [  8962493  37678895  75364816]]
+IoU: [0.75603526 0.1223858  0.1984165 ]
+DSC: [-0.86982139  0.21808152  0.33113112]
+PC: [0.98786433 0.16133857 0.2261917 ]
+SE: [0.76312292 0.33639041 0.61771298]
+SP: [0.9375144024585494, 0.9207933019460007, 0.798316769655398]
+F1: [0.8610707  0.21808152 0.33113112]
+Training: MIoU: 0.3589, MDSC: -0.1069, MPC: 0.4585, AC: 0.7320, MSE: 0.5724, MSP: 0.8855, MF1: 0.4701
+-------------------------------------- Validation 3 ------------------------------------
+Confusion Matrix:
+[[245581883    411390  51240509]
+ [  1240647     15117  11544141]
+ [  2926554      6852  22052939]]
+IoU: [0.8148012  0.00114366 0.25125543]
+DSC: [0.89795092 0.0022847  0.40160534]
+PC: [0.98331445 0.03488332 0.25994302]
+SE: [0.82622467 0.00118102 0.88259964]
+SP: [0.8897164709385028, 0.9987019991460683, 0.7974908771768404]
+F1: [0.89795092 0.0022847  0.40160534]
+Training: MIoU: 0.3557, MDSC: 0.4339, MPC: 0.4260, AC: 0.7989, MSE: 0.5700, MSP: 0.8953, MF1: 0.4339
+Save model at H:\USSeg\trainingrecords\checkpoint\mydata_transunet_Lovasz\mydata_transunet_Lovasz_0.4339_2.pkl.
+-------------------------------------- Training 4 --------------------------------------
+Training: Epoch[004/030] Iteration[100/668] Loss: 0.0755 
+Training: Epoch[004/030] Iteration[200/668] Loss: 0.0757 
+Training: Epoch[004/030] Iteration[300/668] Loss: 0.0750 
+Training: Epoch[004/030] Iteration[400/668] Loss: 0.0751 
+Training: Epoch[004/030] Iteration[500/668] Loss: 0.0753 
+Training: Epoch[004/030] Iteration[600/668] Loss: 0.0750 
+Confusion Matrix:
+[[965695360  58692479 193295246]
+ [  2506441  20673415  37504103]
+ [  9464862  35383257  77158085]]
+IoU: [0.78533885 0.13358397 0.21869861]
+DSC: [-0.91987739  0.2356843   0.35890516]
+PC: [0.98775523 0.18016181 0.25054789]
+SE: [0.79305968 0.34067347 0.63241116]
+SP: [0.9344720985332965, 0.929777944205091, 0.819457682296134]
+F1: [0.87976448 0.2356843  0.35890516]
+Training: MIoU: 0.3792, MDSC: -0.1084, MPC: 0.4728, AC: 0.7595, MSE: 0.5887, MSP: 0.8946, MF1: 0.4915
+-------------------------------------- Validation 4 ------------------------------------
+Confusion Matrix:
+[[269808811    653900  26771071]
+ [  2561283    174292  10064330]
+ [  6027079    292078  18667188]]
+IoU: [0.88224092 0.01267958 0.30195181]
+DSC: [0.93743677 0.02504164 0.46384483]
+PC: [0.96915069 0.15558035 0.33633004]
+SE: [0.90773266 0.01361666 0.74709558]
+SP: [0.7727119785636309, 0.9970641871170264, 0.8811890367255478]
+F1: [0.93743677 0.02504164 0.46384483]
+Training: MIoU: 0.3990, MDSC: 0.4754, MPC: 0.4870, AC: 0.8616, MSE: 0.5561, MSP: 0.8837, MF1: 0.4754
+Save model at H:\USSeg\trainingrecords\checkpoint\mydata_transunet_Lovasz\mydata_transunet_Lovasz_0.4754_3.pkl.
+-------------------------------------- Training 5 --------------------------------------
+Training: Epoch[005/030] Iteration[100/668] Loss: 0.0751 
+Training: Epoch[005/030] Iteration[200/668] Loss: 0.0743 
+Training: Epoch[005/030] Iteration[300/668] Loss: 0.0745 
+Training: Epoch[005/030] Iteration[400/668] Loss: 0.0745 
+Training: Epoch[005/030] Iteration[500/668] Loss: 0.0746 
+Training: Epoch[005/030] Iteration[600/668] Loss: 0.0742 
+Confusion Matrix:
+[[983002489  54463380 180217216]
+ [  2426859  19976053  38281047]
+ [  9025725  36540817  76439662]]
+IoU: [0.79975101 0.13169158 0.22448945]
+DSC: [-0.94391083  0.23273405  0.36666621]
+PC: [0.98848356 0.17999647 0.25917203]
+SE: [0.80727285 0.32918177 0.62652275]
+SP: [0.9373114358653235, 0.9320706691116943, 0.8290801816070597]
+F1: [0.88873517 0.23273405 0.36666621]
+Training: MIoU: 0.3853, MDSC: -0.1148, MPC: 0.4759, AC: 0.7708, MSE: 0.5877, MSP: 0.8995, MF1: 0.4960
+-------------------------------------- Validation 5 ------------------------------------
+Confusion Matrix:
+[[284137353    189150  12907279]
+ [  5962087     17577   6820241]
+ [ 12245724     14204  12726417]]
+IoU: [0.90076058 0.00135174 0.28461903]
+DSC: [0.94778963 0.00269983 0.44311819]
+PC: [0.93977806 0.07955878 0.39213785]
+SE: [0.95593896 0.00137321 0.50933488]
+SP: [0.5181365973072215, 0.9993688972756193, 0.9363697532649089]
+F1: [0.94778963 0.00269983 0.44311819]
+Training: MIoU: 0.3956, MDSC: 0.4645, MPC: 0.4705, AC: 0.8862, MSE: 0.4889, MSP: 0.8180, MF1: 0.4645
+-------------------------------------- Training 6 --------------------------------------
+Training: Epoch[006/030] Iteration[100/668] Loss: 0.0737 
+Training: Epoch[006/030] Iteration[200/668] Loss: 0.0740 
+Training: Epoch[006/030] Iteration[300/668] Loss: 0.0736 
+Training: Epoch[006/030] Iteration[400/668] Loss: 0.0737 
+Training: Epoch[006/030] Iteration[500/668] Loss: 0.0733 
+Training: Epoch[006/030] Iteration[600/668] Loss: 0.0738 
+Confusion Matrix:
+[[1001428997   48351901  167902187]
+ [   2352809   20218598   38112552]
+ [   8899775   35133768   77972661]]
+IoU: [0.81487504 0.14024173 0.23770635]
+DSC: [-0.97009369  0.24598596  0.38410783]
+PC: [0.98888833 0.19496399 0.2745638 ]
+SE: [0.82240528 0.33317862 0.63908767]
+SP: [0.9384061855590987, 0.9376828122121382, 0.8388453926695564]
+F1: [0.89799575 0.24598596 0.38410783]
+Training: MIoU: 0.3976, MDSC: -0.1133, MPC: 0.4861, AC: 0.7852, MSE: 0.5982, MSP: 0.9050, MF1: 0.5094
+-------------------------------------- Validation 6 ------------------------------------
+Confusion Matrix:
+[[238846850  35492011  22894921]
+ [   624843  11053150   1121912]
+ [  2022882  19949481   3013982]]
+IoU: [0.79647075 0.16197133 0.06150585]
+DSC: [0.88670606 0.27878714 0.11588414]
+PC: [0.98903609 0.16622618 0.11150171]
+SE: [0.80356563 0.86353375 0.12062517]
+SP: [0.9299288762446657, 0.8279390784300696, 0.9225347631336591]
+F1: [0.88670606 0.27878714 0.11588414]
+Training: MIoU: 0.3400, MDSC: 0.4271, MPC: 0.4223, AC: 0.7549, MSE: 0.5959, MSP: 0.8935, MF1: 0.4271
+-------------------------------------- Training 7 --------------------------------------
+Training: Epoch[007/030] Iteration[100/668] Loss: 0.0731 
+Training: Epoch[007/030] Iteration[200/668] Loss: 0.0730 
+Training: Epoch[007/030] Iteration[300/668] Loss: 0.0734 
+Training: Epoch[007/030] Iteration[400/668] Loss: 0.0732 
+Training: Epoch[007/030] Iteration[500/668] Loss: 0.0728 
+Training: Epoch[007/030] Iteration[600/668] Loss: 0.0730 
+Confusion Matrix:
+[[1014779326   44647617  158256142]
+ [   2214549   20267858   38201552]
+ [   8505711   35093394   78407099]]
+IoU: [0.82609619 0.14433229 0.24620404]
+DSC: [-0.98916749  0.25225591  0.39512637]
+PC: [0.9895463  0.20266061 0.28525697]
+SE: [0.83336899 0.33399037 0.64264846]
+SP: [0.9413199932390448, 0.9404779812343488, 0.8463213715324783]
+F1: [0.90476744 0.25225591 0.39512637]
+Training: MIoU: 0.4055, MDSC: -0.1139, MPC: 0.4925, AC: 0.7951, MSE: 0.6033, MSP: 0.9094, MF1: 0.5174
+-------------------------------------- Validation 7 ------------------------------------
+Confusion Matrix:
+[[256924387    181498  40127897]
+ [   802121     12192  11985592]
+ [  2178284      4573  22803488]]
+IoU: [0.85580362 0.00093886 0.29576572]
+DSC: [0.92229976 0.00187596 0.45651111]
+PC: [0.9885327  0.06149408 0.30438345]
+SE: [0.86438488 0.00095251 0.912638  ]
+SP: [0.9211246154355089, 0.9994225345209425, 0.8319102369027401]
+F1: [0.92229976 0.00187596 0.45651111]
+Training: MIoU: 0.3842, MDSC: 0.4602, MPC: 0.4515, AC: 0.8350, MSE: 0.5927, MSP: 0.9175, MF1: 0.4602
+-------------------------------------- Training 8 --------------------------------------
+Training: Epoch[008/030] Iteration[100/668] Loss: 0.0727 
+Training: Epoch[008/030] Iteration[200/668] Loss: 0.0730 
+Training: Epoch[008/030] Iteration[300/668] Loss: 0.0725 
+Training: Epoch[008/030] Iteration[400/668] Loss: 0.0720 
+Training: Epoch[008/030] Iteration[500/668] Loss: 0.0720 
+Training: Epoch[008/030] Iteration[600/668] Loss: 0.0728 
+Confusion Matrix:
+[[1028841032   40846742  147995311]
+ [   2249759   20059402   38374798]
+ [   8334414   33942232   79729558]]
+IoU: [0.83763613 0.14806944 0.25854631]
+DSC: [-1.00972739  0.2579451   0.41086499]
+PC: [0.98981728 0.21148915 0.29962292]
+SE: [0.84491691 0.33055526 0.65348774]
+SP: [0.9420648992469288, 0.9441743883346073, 0.8542123642229938]
+F1: [0.91164526 0.2579451  0.41086499]
+Training: MIoU: 0.4148, MDSC: -0.1136, MPC: 0.5003, AC: 0.8059, MSE: 0.6097, MSP: 0.9135, MF1: 0.5268
+-------------------------------------- Validation 8 ------------------------------------
+Confusion Matrix:
+[[251103625    171468  45958689]
+ [   541537     21080  12237288]
+ [  1526882     10541  23448922]]
+IoU: [0.83896351 0.0016238  0.2818979 ]
+DSC: [0.91243084 0.00324233 0.43981334]
+PC: [0.99182999 0.10379686 0.28720621]
+SE: [0.84480177 0.00164689 0.93846947]
+SP: [0.9452600086010122, 0.9994351408098104, 0.8122914398008627]
+F1: [0.91243084 0.00324233 0.43981334]
+Training: MIoU: 0.3742, MDSC: 0.4518, MPC: 0.4609, AC: 0.8196, MSE: 0.5950, MSP: 0.9190, MF1: 0.4518
+-------------------------------------- Training 9 --------------------------------------
+Training: Epoch[009/030] Iteration[100/668] Loss: 0.0723 
+Training: Epoch[009/030] Iteration[200/668] Loss: 0.0723 
+Training: Epoch[009/030] Iteration[300/668] Loss: 0.0722 
+Training: Epoch[009/030] Iteration[400/668] Loss: 0.0716 
+Training: Epoch[009/030] Iteration[500/668] Loss: 0.0720 
+Training: Epoch[009/030] Iteration[600/668] Loss: 0.0718 
+Confusion Matrix:
+[[1038135470   38872038  140675577]
+ [   1997144   19579065   39107750]
+ [   8083001   34752080   79171123]]
+IoU: [0.84555022 0.14577727 0.26233886]
+DSC: [-1.02326306  0.25446005  0.41563937]
+PC: [0.99038352 0.21006863 0.30573378]
+SE: [0.8525498  0.32263988 0.64891063]
+SP: [0.9448238217401995, 0.9450438854706705, 0.8593648609420816]
+F1: [0.91631234 0.25446005 0.41563937]
+Training: MIoU: 0.4179, MDSC: -0.1177, MPC: 0.5021, AC: 0.8118, MSE: 0.6080, MSP: 0.9164, MF1: 0.5288
+-------------------------------------- Validation 9 ------------------------------------
+Confusion Matrix:
+[[237658361    684288  58891133]
+ [   287996     44512  12467397]
+ [  1077917     47030  23861398]]
+IoU: [0.79590959 0.00328958 0.2476665 ]
+DSC: [0.88635819 0.00655758 0.39700753]
+PC: [0.99428546 0.05737339 0.25059248]
+SE: [0.79956713 0.00347753 0.95497753]
+SP: [0.963851586225148, 0.9977303776557694, 0.7698362049282729]
+F1: [0.88635819 0.00655758 0.39700753]
+Training: MIoU: 0.3490, MDSC: 0.4300, MPC: 0.4341, AC: 0.7807, MSE: 0.5860, MSP: 0.9105, MF1: 0.4300
+-------------------------------------- Training 10 --------------------------------------
+Training: Epoch[010/030] Iteration[100/668] Loss: 0.0718 
+Training: Epoch[010/030] Iteration[200/668] Loss: 0.0715 
+Training: Epoch[010/030] Iteration[300/668] Loss: 0.0719 
+Training: Epoch[010/030] Iteration[400/668] Loss: 0.0712 
+Training: Epoch[010/030] Iteration[500/668] Loss: 0.0720 
+Training: Epoch[010/030] Iteration[600/668] Loss: 0.0714 
+Confusion Matrix:
+[[1044475060   36950350  136257675]
+ [   1899379   19466409   39318171]
+ [   7566803   34314617   80124784]]
+IoU: [0.85113937 0.14752988 0.26925275]
+DSC: [-1.03242513  0.25712599  0.42426971]
+PC: [0.9910183  0.21454991 0.31335388]
+SE: [0.85775607 0.32078344 0.65672713]
+SP: [0.9481845007713963, 0.9468048542410941, 0.8626561543305867]
+F1: [0.91958432 0.25712599 0.42426971]
+Training: MIoU: 0.4226, MDSC: -0.1170, MPC: 0.5063, AC: 0.8170, MSE: 0.6118, MSP: 0.9192, MF1: 0.5337
+-------------------------------------- Validation 10 ------------------------------------
+Confusion Matrix:
+[[252933165    465954  43834663]
+ [  1352518     29196  11418191]
+ [  3854273     36322  21095750]]
+IoU: [0.83630699 0.00219483 0.26291078]
+DSC: [0.91085749 0.00438004 0.41635685]
+PC: [0.97982958 0.05493422 0.27630826]
+SE: [0.85095699 0.00228095 0.84429115]
+SP: [0.862204082172748, 0.9984412022778453, 0.8217843533886691]
+F1: [0.91085749 0.00438004 0.41635685]
+Training: MIoU: 0.3671, MDSC: 0.4439, MPC: 0.4370, AC: 0.8180, MSE: 0.5658, MSP: 0.8941, MF1: 0.4439
+-------------------------------------- Training 11 --------------------------------------
+Training: Epoch[011/030] Iteration[100/668] Loss: 0.0714 
+Training: Epoch[011/030] Iteration[200/668] Loss: 0.0715 
+Training: Epoch[011/030] Iteration[300/668] Loss: 0.0711 
+Training: Epoch[011/030] Iteration[400/668] Loss: 0.0709 
+Training: Epoch[011/030] Iteration[500/668] Loss: 0.0714 
+Training: Epoch[011/030] Iteration[600/668] Loss: 0.0713 
+Confusion Matrix:
+[[1051378333   34663933  131640819]
+ [   1791540   20042558   38849861]
+ [   7271129   33267253   81467822]]
+IoU: [0.85704665 0.15583358 0.27852544]
+DSC: [-1.04259799  0.26964708  0.43569792]
+PC: [0.99145387 0.22782432 0.32333825]
+SE: [0.86342526 0.33027769 0.66773508]
+SP: [0.9503932294373179, 0.9492933275217071, 0.8666340150114196]
+F1: [0.92302113 0.26964708 0.43569792]
+Training: MIoU: 0.4305, MDSC: -0.1124, MPC: 0.5142, AC: 0.8233, MSE: 0.6205, MSP: 0.9221, MF1: 0.5428
+-------------------------------------- Validation 11 ------------------------------------
+Confusion Matrix:
+[[283093860    100134  14039788]
+ [  3651234      4926   9143745]
+ [  9517256      1769  15467320]]
+IoU: [9.12022513e-01 3.81806953e-04 3.21099422e-01]
+DSC: [9.53987211e-01 7.63322464e-04 4.86109398e-01]
+PC: [0.95555125 0.04611107 0.40018056]
+SE: [9.52428281e-01 3.84846606e-04 6.19030915e-01]
+SP: [0.6515004796718383, 0.9996837472539386, 0.9252225355756261]
+F1: [9.53987211e-01 7.63322464e-04 4.86109398e-01]
+Training: MIoU: 0.4112, MDSC: 0.4803, MPC: 0.4673, AC: 0.8912, MSE: 0.5239, MSP: 0.8588, MF1: 0.4803
+Save model at H:\USSeg\trainingrecords\checkpoint\mydata_transunet_Lovasz\mydata_transunet_Lovasz_0.4803_10.pkl.
+-------------------------------------- Training 12 --------------------------------------
+Training: Epoch[012/030] Iteration[100/668] Loss: 0.0707 
+Training: Epoch[012/030] Iteration[200/668] Loss: 0.0710 
+Training: Epoch[012/030] Iteration[300/668] Loss: 0.0713 
+Training: Epoch[012/030] Iteration[400/668] Loss: 0.0710 
+Training: Epoch[012/030] Iteration[500/668] Loss: 0.0711 
+Training: Epoch[012/030] Iteration[600/668] Loss: 0.0706 
+Confusion Matrix:
+[[1059092748   33034091  125556246]
+ [   1773497   19513569   39396893]
+ [   7176549   34008010   80821645]]
+IoU: [0.86341443 0.15277672 0.28164842]
+DSC: [-1.0542215   0.26505865  0.43950964]
+PC: [0.99162014 0.2254453  0.32884433]
+SE: [0.86976058 0.32156058 0.66243881]
+SP: [0.9510096994111281, 0.9499569776735, 0.8709657451088046]
+F1: [0.92670145 0.26505865 0.43950964]
+Training: MIoU: 0.4326, MDSC: -0.1166, MPC: 0.5153, AC: 0.8279, MSE: 0.6179, MSP: 0.9240, MF1: 0.5438
+-------------------------------------- Validation 12 ------------------------------------
+Confusion Matrix:
+[[252003172    235522  44995088]
+ [   353282     15545  12431078]
+ [  1303214     11270  23671861]]
+IoU: [0.84312937 0.00119149 0.28723625]
+DSC: [0.91488898 0.00238014 0.44628366]
+PC: [0.99346961 0.05925584 0.29189195]
+SE: [0.84782817 0.00121446 0.94739191]
+SP: [0.9561614079195474, 0.9992340888128319, 0.8147744312701091]
+F1: [0.91488898 0.00238014 0.44628366]
+Training: MIoU: 0.3772, MDSC: 0.4545, MPC: 0.4482, AC: 0.8229, MSE: 0.5988, MSP: 0.9234, MF1: 0.4545
+-------------------------------------- Training 13 --------------------------------------
+Training: Epoch[013/030] Iteration[100/668] Loss: 0.0702 
+Training: Epoch[013/030] Iteration[200/668] Loss: 0.0710 
+Training: Epoch[013/030] Iteration[300/668] Loss: 0.0703 
+Training: Epoch[013/030] Iteration[400/668] Loss: 0.0707 
+Training: Epoch[013/030] Iteration[500/668] Loss: 0.0708 
+Training: Epoch[013/030] Iteration[600/668] Loss: 0.0702 
+Confusion Matrix:
+[[1064869117   30859330  121954638]
+ [   1659834   19485620   39538505]
+ [   6786123   32564526   82655555]]
+IoU: [0.86848046 0.15700558 0.29155466]
+DSC: [-1.06276     0.27139987  0.45147862]
+PC: [0.99213096 0.23502283 0.33854596]
+SE: [0.87450432 0.32110001 0.6774701 ]
+SP: [0.9537689558030554, 0.9526577867564037, 0.8736723198881212]
+F1: [0.9296115  0.27139987 0.45147862]
+Training: MIoU: 0.4390, MDSC: -0.1133, MPC: 0.5219, AC: 0.8334, MSE: 0.6244, MSP: 0.9267, MF1: 0.5508
+-------------------------------------- Validation 13 ------------------------------------
+Confusion Matrix:
+[[255695363  23224881  18313538]
+ [   483811  11458139    857955]
+ [  1901037  20513355   2571953]]
+IoU: [0.85340275 0.20266211 0.05824454]
+DSC: [0.92090373 0.33702253 0.11007766]
+PC: [0.99075928 0.20758861 0.11828636]
+SE: [0.86025001 0.89517375 0.10293434]
+SP: [0.9368858248701578, 0.8642597642573705, 0.9381631938596402]
+F1: [0.92090373 0.33702253 0.11007766]
+Training: MIoU: 0.3714, MDSC: 0.4560, MPC: 0.4389, AC: 0.8051, MSE: 0.6195, MSP: 0.9131, MF1: 0.4560
+-------------------------------------- Training 14 --------------------------------------
+Training: Epoch[014/030] Iteration[100/668] Loss: 0.0702 
+Training: Epoch[014/030] Iteration[200/668] Loss: 0.0702 
+Training: Epoch[014/030] Iteration[300/668] Loss: 0.0699 
+Training: Epoch[014/030] Iteration[400/668] Loss: 0.0705 
+Training: Epoch[014/030] Iteration[500/668] Loss: 0.0702 
+Training: Epoch[014/030] Iteration[600/668] Loss: 0.0698 
+Confusion Matrix:
+[[1073495979   29595347  114591759]
+ [   1606245   18897813   40179901]
+ [   6442674   33310578   82252952]]
+IoU: [0.87579991 0.15290744 0.29718038]
+DSC: [-1.07578778  0.26525536  0.45819439]
+PC: [0.99255794 0.23101405 0.34702283]
+SE: [0.88158897 0.31141365 0.67417024]
+SP: [0.9559422419476411, 0.9530443920717201, 0.8789301861883729]
+F1: [0.9337882  0.26525536 0.45819439]
+Training: MIoU: 0.4420, MDSC: -0.1174, MPC: 0.5235, AC: 0.8388, MSE: 0.6224, MSP: 0.9293, MF1: 0.5524
+-------------------------------------- Validation 14 ------------------------------------
+Confusion Matrix:
+[[239896424  46068399  11268959]
+ [   322331  12192777    284797]
+ [  1240193  22877363    868789]]
+IoU: [0.80287614 0.14915502 0.02377632]
+DSC: [0.89066145 0.25959078 0.04644826]
+PC: [0.99352882 0.15027109 0.06993647]
+SE: [0.80709677 0.95256777 0.03477055]
+SP: [0.9586483443051375, 0.7860290024651377, 0.9627338689811472]
+F1: [0.89066145 0.25959078 0.04644826]
+Training: MIoU: 0.3253, MDSC: 0.3989, MPC: 0.4046, AC: 0.7551, MSE: 0.5981, MSP: 0.9025, MF1: 0.3989
+-------------------------------------- Training 15 --------------------------------------
+Training: Epoch[015/030] Iteration[100/668] Loss: 0.0700 
+Training: Epoch[015/030] Iteration[200/668] Loss: 0.0702 
+Training: Epoch[015/030] Iteration[300/668] Loss: 0.0701 
+Training: Epoch[015/030] Iteration[400/668] Loss: 0.0694 
+Training: Epoch[015/030] Iteration[500/668] Loss: 0.0697 
+Training: Epoch[015/030] Iteration[600/668] Loss: 0.0698 
+Confusion Matrix:
+[[1080668389   27605537  109409159]
+ [   1549389   19257943   39876627]
+ [   6553105   31451146   84001953]]
+IoU: [0.88161291 0.16083046 0.30963669]
+DSC: [1.07297773 0.27709553 0.47285891]
+PC: [0.99255813 0.24590481 0.36007873]
+SE: [0.88747918 0.31734816 0.68850559]
+SP: [0.9556489858734211, 0.9559176269565591, 0.8832214998809059]
+F1: [0.93708212 0.27709553 0.47285891]
+Training: MIoU: 0.4507, MDSC: 0.6076, MPC: 0.5328, AC: 0.8454, MSE: 0.6311, MSP: 0.9316, MF1: 0.5623
+-------------------------------------- Validation 15 ------------------------------------
+Confusion Matrix:
+[[269353186  18778673   9101923]
+ [  1272882  10905970    621053]
+ [  3660992  19542812   1782541]]
+IoU: [0.8914031  0.21333477 0.05135626]
+DSC: [0.94258395 0.3516503  0.09769526]
+PC: [0.98201201 0.22154243 0.15492924]
+SE: [0.90619977 0.85203523 0.07134061]
+SP: [0.8694267359158424, 0.8810704801193254, 0.968638969222722]
+F1: [0.94258395 0.3516503  0.09769526]
+Training: MIoU: 0.3854, MDSC: 0.4640, MPC: 0.4528, AC: 0.8419, MSE: 0.6099, MSP: 0.9064, MF1: 0.4640
+-------------------------------------- Training 16 --------------------------------------
+Training: Epoch[016/030] Iteration[100/668] Loss: 0.0693 
+Training: Epoch[016/030] Iteration[200/668] Loss: 0.0696 
+Training: Epoch[016/030] Iteration[300/668] Loss: 0.0698 
+Training: Epoch[016/030] Iteration[400/668] Loss: 0.0698 
+Training: Epoch[016/030] Iteration[500/668] Loss: 0.0697 
+Training: Epoch[016/030] Iteration[600/668] Loss: 0.0693 
+Confusion Matrix:
+[[1084799247   27553599  105330239]
+ [   1427745   19012187   40244027]
+ [   6184839   33298729   82522636]]
+IoU: [0.88533672 0.15643219 0.30840306]
+DSC: [1.0707836  0.27054277 0.47141905]
+PC: [0.9930314  0.2380555  0.36178762]
+SE: [0.89087157 0.3132984  0.67638065]
+SP: [0.9583306299858083, 0.9545772825836185, 0.8861248287936935]
+F1: [0.93918154 0.27054277 0.47141905]
+Training: MIoU: 0.4501, MDSC: 0.6042, MPC: 0.5310, AC: 0.8472, MSE: 0.6269, MSP: 0.9330, MF1: 0.5604
+-------------------------------------- Validation 16 ------------------------------------
+Confusion Matrix:
+[[278054368    129466  19049948]
+ [  3106013      8385   9685507]
+ [  7462684      9347  17514314]]
+IoU: [9.03353244e-01 6.48054931e-04 3.26018748e-01]
+DSC: [0.9492229  0.00129527 0.4917257 ]
+PC: [0.96338235 0.05696409 0.37868976]
+SE: [9.35473640e-01 6.55082987e-04 7.00955422e-01]
+SP: [0.7203030996725, 0.9995691982332314, 0.9073150557345725]
+F1: [0.9492229  0.00129527 0.4917257 ]
+Training: MIoU: 0.4100, MDSC: 0.4807, MPC: 0.4663, AC: 0.8823, MSE: 0.5457, MSP: 0.8757, MF1: 0.4807
+Save model at H:\USSeg\trainingrecords\checkpoint\mydata_transunet_Lovasz\mydata_transunet_Lovasz_0.4807_15.pkl.
+-------------------------------------- Training 17 --------------------------------------
+Training: Epoch[017/030] Iteration[100/668] Loss: 0.0689 
+Training: Epoch[017/030] Iteration[200/668] Loss: 0.0694 
+Training: Epoch[017/030] Iteration[300/668] Loss: 0.0693 
+Training: Epoch[017/030] Iteration[400/668] Loss: 0.0689 
+Training: Epoch[017/030] Iteration[500/668] Loss: 0.0693 
+Training: Epoch[017/030] Iteration[600/668] Loss: 0.0694 
+Confusion Matrix:
+[[1093399481   25190693   99092911]
+ [   1467801   18333603   40882555]
+ [   6130989   31987972   83887243]]
+IoU: [0.89236567 0.15555061 0.32020272]
+DSC: [1.06673245 0.26922336 0.48508114]
+PC: [0.99309827 0.24278973 0.37472629]
+SE: [0.89793436 0.30211613 0.68756539]
+SP: [0.958406134872188, 0.9573194579747065, 0.8905044786182708]
+F1: [0.94312181 0.26922336 0.48508114]
+Training: MIoU: 0.4560, MDSC: 0.6070, MPC: 0.5369, AC: 0.8538, MSE: 0.6292, MSP: 0.9354, MF1: 0.5658
+-------------------------------------- Validation 17 ------------------------------------
+Confusion Matrix:
+[[268407445  13613756  15212581]
+ [   659156  11250820    889929]
+ [  2425023  19611903   2949419]]
+IoU: [0.89374423 0.24444719 0.07178148]
+DSC: [0.94389117 0.39286069 0.13394798]
+PC: [0.98863987 0.25296112 0.15480947]
+SE: [0.90301797 0.87897684 0.11804123]
+SP: [0.9183782725197658, 0.8968852153670711, 0.9480620633331371]
+F1: [0.94389117 0.39286069 0.13394798]
+Training: MIoU: 0.4033, MDSC: 0.4902, MPC: 0.4655, AC: 0.8436, MSE: 0.6333, MSP: 0.9211, MF1: 0.4902
+Save model at H:\USSeg\trainingrecords\checkpoint\mydata_transunet_Lovasz\mydata_transunet_Lovasz_0.4902_16.pkl.
+-------------------------------------- Training 18 --------------------------------------
+Training: Epoch[018/030] Iteration[100/668] Loss: 0.0691 
+Training: Epoch[018/030] Iteration[200/668] Loss: 0.0695 
+Training: Epoch[018/030] Iteration[300/668] Loss: 0.0690 
+Training: Epoch[018/030] Iteration[400/668] Loss: 0.0689 
+Training: Epoch[018/030] Iteration[500/668] Loss: 0.0689 
+Training: Epoch[018/030] Iteration[600/668] Loss: 0.0685 
+Confusion Matrix:
+[[1096476131   24906037   96300917]
+ [   1357047   18429877   40897035]
+ [   5625922   31189164   85191118]]
+IoU: [0.89532663 0.1578182  0.32866417]
+DSC: [1.06494492 0.27261309 0.49472873]
+PC: [0.99367175 0.24729765 0.38307241]
+SE: [0.900461   0.30370261 0.69825234]
+SP: [0.9617769841280398, 0.958128200724907, 0.8926771832519175]
+F1: [0.94477291 0.27261309 0.49472873]
+Training: MIoU: 0.4606, MDSC: 0.6108, MPC: 0.5413, AC: 0.8570, MSE: 0.6341, MSP: 0.9375, MF1: 0.5707
+-------------------------------------- Validation 18 ------------------------------------
+Confusion Matrix:
+[[272409938    276709  24547135]
+ [  1309435     27947  11462523]
+ [  3745086     24360  21216899]]
+IoU: [0.90115937 0.0021332  0.34784081]
+DSC: [0.94801034 0.00425732 0.51614524]
+PC: [0.98178318 0.08494116 0.37075267]
+SE: [0.91648377 0.00218338 0.84913976]
+SP: [0.8662338549075391, 0.9990656418554512, 0.8838524343969112]
+F1: [0.94801034 0.00425732 0.51614524]
+Training: MIoU: 0.4170, MDSC: 0.4895, MPC: 0.4792, AC: 0.8765, MSE: 0.5893, MSP: 0.9164, MF1: 0.4895
+-------------------------------------- Training 19 --------------------------------------
+Training: Epoch[019/030] Iteration[100/668] Loss: 0.0686 
+Training: Epoch[019/030] Iteration[200/668] Loss: 0.0688 
+Training: Epoch[019/030] Iteration[300/668] Loss: 0.0685 
+Training: Epoch[019/030] Iteration[400/668] Loss: 0.0687 
+Training: Epoch[019/030] Iteration[500/668] Loss: 0.0686 
+Training: Epoch[019/030] Iteration[600/668] Loss: 0.0684 
+Confusion Matrix:
+[[1102536254   24110237   91036594]
+ [   1257066   18287902   41138991]
+ [   5193543   30153381   86659280]]
+IoU: [0.90066654 0.15909776 0.34093426]
+DSC: [1.06177798 0.27452    0.50850257]
+PC: [0.99418333 0.2520678  0.39600308]
+SE: [0.90543777 0.30136303 0.71028585]
+SP: [0.9646909888629307, 0.9594953707209941, 0.8966059195437144]
+F1: [0.94773756 0.27452    0.50850257]
+Training: MIoU: 0.4669, MDSC: 0.6149, MPC: 0.5474, AC: 0.8623, MSE: 0.6390, MSP: 0.9403, MF1: 0.5769
+-------------------------------------- Validation 19 ------------------------------------
+Confusion Matrix:
+[[274445088  11900721  10887973]
+ [   808255  10812390   1179260]
+ [  2742817  18647187   3596341]]
+IoU: [0.91242988 0.24943335 0.09705786]
+DSC: [0.95421002 0.39927435 0.1769421 ]
+PC: [0.98722618 0.26141954 0.229599  ]
+SE: [0.92333074 0.84472424 0.14393226]
+SP: [0.9060221112177048, 0.9051955311283209, 0.9610776715370288]
+F1: [0.95421002 0.39927435 0.1769421 ]
+Training: MIoU: 0.4196, MDSC: 0.5101, MPC: 0.4927, AC: 0.8622, MSE: 0.6373, MSP: 0.9241, MF1: 0.5101
+Save model at H:\USSeg\trainingrecords\checkpoint\mydata_transunet_Lovasz\mydata_transunet_Lovasz_0.5101_18.pkl.
+-------------------------------------- Training 20 --------------------------------------
+Training: Epoch[020/030] Iteration[100/668] Loss: 0.0682 
+Training: Epoch[020/030] Iteration[200/668] Loss: 0.0684 
+Training: Epoch[020/030] Iteration[300/668] Loss: 0.0684 
+Training: Epoch[020/030] Iteration[400/668] Loss: 0.0686 
+Training: Epoch[020/030] Iteration[500/668] Loss: 0.0683 
+Training: Epoch[020/030] Iteration[600/668] Loss: 0.0682 
+Confusion Matrix:
+[[1106875239   22811114   87996732]
+ [   1220364   17760183   41703412]
+ [   5153972   30404907   86447325]]
+IoU: [0.90426741 0.15592789 0.34344515]
+DSC: [1.05966401 0.26978826 0.51129017]
+PC: [0.99427412 0.25022729 0.39994604]
+SE: [0.90900108 0.29266685 0.7085486 ]
+SP: [0.9651084880798974, 0.9602773408454115, 0.8985423281922464]
+F1: [0.94972734 0.26978826 0.51129017]
+Training: MIoU: 0.4679, MDSC: 0.6136, MPC: 0.5481, AC: 0.8648, MSE: 0.6367, MSP: 0.9413, MF1: 0.5769
+-------------------------------------- Validation 20 ------------------------------------
+Confusion Matrix:
+[[257694142   8029805  31509835]
+ [   646736   2575679   9577490]
+ [  2091887   4473467  18420991]]
+IoU: [0.85905949 0.10179271 0.27879473]
+DSC: [0.9241872  0.18477652 0.43602734]
+PC: [0.98948434 0.17081288 0.30955322]
+SE: [0.86697461 0.20122642 0.73724232]
+SP: [0.9275232922028516, 0.9611964897524853, 0.8674746431667602]
+F1: [0.9241872  0.18477652 0.43602734]
+Training: MIoU: 0.4132, MDSC: 0.5150, MPC: 0.4900, AC: 0.8319, MSE: 0.6018, MSP: 0.9187, MF1: 0.5150
+Save model at H:\USSeg\trainingrecords\checkpoint\mydata_transunet_Lovasz\mydata_transunet_Lovasz_0.515_19.pkl.
+-------------------------------------- Training 21 --------------------------------------
+Training: Epoch[021/030] Iteration[100/668] Loss: 0.0684 
+Training: Epoch[021/030] Iteration[200/668] Loss: 0.0683 
+Training: Epoch[021/030] Iteration[300/668] Loss: 0.0680 
+Training: Epoch[021/030] Iteration[400/668] Loss: 0.0679 
+Training: Epoch[021/030] Iteration[500/668] Loss: 0.0680 
+Training: Epoch[021/030] Iteration[600/668] Loss: 0.0682 
+Confusion Matrix:
+[[1110965644   23042045   83675396]
+ [   1123493   17976777   41583689]
+ [   4629863   30021763   87354578]]
+IoU: [0.90806977 0.1580407  0.35328282]
+DSC: [1.05736652 0.27294499 0.52211232]
+PC: [0.99484798 0.25304939 0.4108606 ]
+SE: [0.91236025 0.29623606 0.71598472]
+SP: [0.9685075764041001, 0.9603909589815344, 0.902016337492505]
+F1: [0.9518203  0.27294499 0.52211232]
+Training: MIoU: 0.4731, MDSC: 0.6175, MPC: 0.5529, AC: 0.8686, MSE: 0.6415, MSP: 0.9436, MF1: 0.5823
+-------------------------------------- Validation 21 ------------------------------------
+Confusion Matrix:
+[[270046808    599423  26587551]
+ [   611648     37578  12150679]
+ [  2388334     50794  22547217]]
+IoU: [0.89945516 0.00279388 0.35382295]
+DSC: [0.94706648 0.00557219 0.52270195]
+PC: [0.98901294 0.05463547 0.36790491]
+SE: [0.90853336 0.0029358  0.90238156]
+SP: [0.9206065169208376, 0.9979820720510113, 0.8750515456083325]
+F1: [0.94706648 0.00557219 0.52270195]
+Training: MIoU: 0.4187, MDSC: 0.4918, MPC: 0.4705, AC: 0.8735, MSE: 0.6046, MSP: 0.9312, MF1: 0.4918
+-------------------------------------- Training 22 --------------------------------------
+Training: Epoch[022/030] Iteration[100/668] Loss: 0.0679 
+Training: Epoch[022/030] Iteration[200/668] Loss: 0.0679 
+Training: Epoch[022/030] Iteration[300/668] Loss: 0.0679 
+Training: Epoch[022/030] Iteration[400/668] Loss: 0.0680 
+Training: Epoch[022/030] Iteration[500/668] Loss: 0.0681 
+Training: Epoch[022/030] Iteration[600/668] Loss: 0.0678 
+Confusion Matrix:
+[[1114173799   23181089   80328197]
+ [   1132197   18432590   41119172]
+ [   4474895   29594932   87936377]]
+IoU: [0.9108009  0.16245896 0.36120389]
+DSC: [1.05574263 0.27950915 0.53071239]
+PC: [0.99499269 0.25885339 0.41997709]
+SE: [0.91499489 0.30374732 0.72075332]
+SP: [0.9693081887501518, 0.9606057752097173, 0.9049980445209287]
+F1: [0.95331848 0.27950915 0.53071239]
+Training: MIoU: 0.4782, MDSC: 0.6220, MPC: 0.5579, AC: 0.8716, MSE: 0.6465, MSP: 0.9450, MF1: 0.5878
+-------------------------------------- Validation 22 ------------------------------------
+Confusion Matrix:
+[[272248217  12087849  12897716]
+ [   685084  10617787   1497034]
+ [  2631049  17791421   4563875]]
+IoU: [0.90583362 0.24878145 0.11589   ]
+DSC: [0.95059045 0.39843873 0.20770864]
+PC: [0.98796603 0.26218663 0.24072816]
+SE: [0.91593969 0.82952077 0.18265477]
+SP: [0.9122396903635581, 0.9072706280697357, 0.9535703679839153]
+F1: [0.95059045 0.39843873 0.20770864]
+Training: MIoU: 0.4235, MDSC: 0.5189, MPC: 0.4970, AC: 0.8579, MSE: 0.6427, MSP: 0.9244, MF1: 0.5189
+Save model at H:\USSeg\trainingrecords\checkpoint\mydata_transunet_Lovasz\mydata_transunet_Lovasz_0.5189_21.pkl.
+-------------------------------------- Training 23 --------------------------------------
+Training: Epoch[023/030] Iteration[100/668] Loss: 0.0675 
+Training: Epoch[023/030] Iteration[200/668] Loss: 0.0675 
+Training: Epoch[023/030] Iteration[300/668] Loss: 0.0675 
+Training: Epoch[023/030] Iteration[400/668] Loss: 0.0677 
+Training: Epoch[023/030] Iteration[500/668] Loss: 0.0679 
+Training: Epoch[023/030] Iteration[600/668] Loss: 0.0676 
+Confusion Matrix:
+[[1119596729   21375808   76710548]
+ [   1025405   17971369   41687185]
+ [   4076703   28652971   89276530]]
+IoU: [0.91561195 0.16232431 0.37136052]
+DSC: [1.05284709 0.27930985 0.54159429]
+PC: [0.99546358 0.26428426 0.42988731]
+SE: [0.91944837 0.29614694 0.73173763]
+SP: [0.9720723441469588, 0.9626564313003177, 0.9073836160313282]
+F1: [0.95594721 0.27930985 0.54159429]
+Training: MIoU: 0.4831, MDSC: 0.6246, MPC: 0.5632, AC: 0.8761, MSE: 0.6491, MSP: 0.9474, MF1: 0.5923
+-------------------------------------- Validation 23 ------------------------------------
+Confusion Matrix:
+[[278977335    803844  17452603]
+ [  2472226    223702  10103977]
+ [  6183485    278770  18524090]]
+IoU: [0.91202    0.01611393 0.35255156]
+DSC: [0.95398584 0.03171679 0.5213133 ]
+PC: [0.96990711 0.17124647 0.40199264]
+SE: [0.93857883 0.01747685 0.74136854]
+SP: [0.7709296106387906, 0.9966401416010863, 0.9111174651159762]
+F1: [0.95398584 0.03171679 0.5213133 ]
+Training: MIoU: 0.4269, MDSC: 0.5023, MPC: 0.5144, AC: 0.8887, MSE: 0.5658, MSP: 0.8929, MF1: 0.5023
+-------------------------------------- Training 24 --------------------------------------
+Training: Epoch[024/030] Iteration[100/668] Loss: 0.0672 
+Training: Epoch[024/030] Iteration[200/668] Loss: 0.0674 
+Training: Epoch[024/030] Iteration[300/668] Loss: 0.0672 
+Training: Epoch[024/030] Iteration[400/668] Loss: 0.0670 
+Training: Epoch[024/030] Iteration[500/668] Loss: 0.0673 
+Training: Epoch[024/030] Iteration[600/668] Loss: 0.0672 
+Confusion Matrix:
+[[1126568420   18452452   72662213]
+ [    978639   17555022   42150298]
+ [   3783078   28594734   89628392]]
+IoU: [0.92156997 0.16295215 0.37846837]
+DSC: [1.0492696  0.28023879 0.54911433]
+PC: [0.99579105 0.27174028 0.43840734]
+SE: [0.92517375 0.28928604 0.73462159]
+SP: [0.9739355588620281, 0.9648820167584395, 0.9101881485924789]
+F1: [0.9591844  0.28023879 0.54911433]
+Training: MIoU: 0.4877, MDSC: 0.6262, MPC: 0.5686, AC: 0.8810, MSE: 0.6497, MSP: 0.9497, MF1: 0.5962
+-------------------------------------- Validation 24 ------------------------------------
+Confusion Matrix:
+[[259016835  27332217  10884730]
+ [   336066  12177331    286508]
+ [  1356619  22399958   1229768]]
+IoU: [0.86649014 0.19473734 0.03401134]
+DSC: [0.92847009 0.32599189 0.06578524]
+PC: [0.99350739 0.19669566 0.09916679]
+SE: [0.87142462 0.95136105 0.0492176 ]
+SP: [0.9552036785867876, 0.8456577636442928, 0.9639676639396931]
+F1: [0.92847009 0.32599189 0.06578524]
+Training: MIoU: 0.3651, MDSC: 0.4401, MPC: 0.4298, AC: 0.8132, MSE: 0.6240, MSP: 0.9216, MF1: 0.4401
+-------------------------------------- Training 25 --------------------------------------
+Training: Epoch[025/030] Iteration[100/668] Loss: 0.0668 
+Training: Epoch[025/030] Iteration[200/668] Loss: 0.0672 
+Training: Epoch[025/030] Iteration[300/668] Loss: 0.0673 
+Training: Epoch[025/030] Iteration[400/668] Loss: 0.0674 
+Training: Epoch[025/030] Iteration[500/668] Loss: 0.0671 
+Training: Epoch[025/030] Iteration[600/668] Loss: 0.0670 
+Confusion Matrix:
+[[1128223763   19040535   70418787]
+ [    939563   17407704   42336692]
+ [   3607801   28605981   89792422]]
+IoU: [0.92308596 0.16069074 0.38248329]
+DSC: [1.04834459 0.27688812 0.55332791]
+PC: [0.99598563 0.26758762 0.4433145 ]
+SE: [0.92653317 0.28685841 0.73596603]
+SP: [0.9751088732675771, 0.9644346518321683, 0.9117972576583412]
+F1: [0.96000489 0.27688812 0.55332791]
+Training: MIoU: 0.4888, MDSC: 0.6262, MPC: 0.5690, AC: 0.8822, MSE: 0.6498, MSP: 0.9504, MF1: 0.5967
+-------------------------------------- Validation 25 ------------------------------------
+Confusion Matrix:
+[[265766389  16546818  14920575]
+ [   425873  11007283   1366749]
+ [  1727580  18894971   4363794]]
+IoU: [0.88770114 0.2281695  0.10572828]
+DSC: [0.94051025 0.37156027 0.19123736]
+PC: [0.99196232 0.2369753  0.2113103 ]
+SE: [0.89413251 0.85995037 0.17464715]
+SP: [0.9430096132852559, 0.8900075258179015, 0.9474659539174528]
+F1: [0.94051025 0.37156027 0.19123736]
+Training: MIoU: 0.4072, MDSC: 0.5011, MPC: 0.4801, AC: 0.8392, MSE: 0.6429, MSP: 0.9268, MF1: 0.5011
+-------------------------------------- Training 26 --------------------------------------
+Training: Epoch[026/030] Iteration[100/668] Loss: 0.0666 
+Training: Epoch[026/030] Iteration[200/668] Loss: 0.0668 
+Training: Epoch[026/030] Iteration[300/668] Loss: 0.0665 
+Training: Epoch[026/030] Iteration[400/668] Loss: 0.0667 
+Training: Epoch[026/030] Iteration[500/668] Loss: 0.0669 
+Training: Epoch[026/030] Iteration[600/668] Loss: 0.0670 
+Confusion Matrix:
+[[1134165503   17916882   65600700]
+ [    841939   17807470   42034550]
+ [   3280163   27367981   91358060]]
+IoU: [0.92827033 0.16804443 0.39782913]
+DSC: [1.04519847 0.28773636 0.56920996]
+PC: [0.99637868 0.2822446  0.45910116]
+SE: [0.93141271 0.29344608 0.74879848]
+SP: [0.9774366504889483, 0.966197488199818, 0.9158025462990581]
+F1: [0.96280103 0.28773636 0.56920996]
+Training: MIoU: 0.4980, MDSC: 0.6340, MPC: 0.5792, AC: 0.8879, MSE: 0.6579, MSP: 0.9531, MF1: 0.6066
+-------------------------------------- Validation 26 ------------------------------------
+Confusion Matrix:
+[[263319403    608556  33305823]
+ [   948140     42186  11809579]
+ [  3147264     69602  21769479]]
+IoU: [0.8738596  0.00312997 0.31054118]
+DSC: [0.93268418 0.00624042 0.47391289]
+PC: [0.9846852  0.05856369 0.32547683]
+SE: [0.88589998 0.00329581 0.87125504]
+SP: [0.8916165536405438, 0.997895358038885, 0.8544822582456983]
+F1: [0.93268418 0.00624042 0.47391289]
+Training: MIoU: 0.3958, MDSC: 0.4709, MPC: 0.4562, AC: 0.8511, MSE: 0.5868, MSP: 0.9147, MF1: 0.4709
+-------------------------------------- Training 27 --------------------------------------
+Training: Epoch[027/030] Iteration[100/668] Loss: 0.0666 
+Training: Epoch[027/030] Iteration[200/668] Loss: 0.0670 
+Training: Epoch[027/030] Iteration[300/668] Loss: 0.0666 
+Training: Epoch[027/030] Iteration[400/668] Loss: 0.0666 
+Training: Epoch[027/030] Iteration[500/668] Loss: 0.0661 
+Training: Epoch[027/030] Iteration[600/668] Loss: 0.0666 
+Confusion Matrix:
+[[1137942546   17037645   62702894]
+ [    845308   17013146   42825505]
+ [   3080904   28266614   90658686]]
+IoU: [0.93151104 0.16051922 0.39843912]
+DSC: [1.04322935 0.27663345 0.56983405]
+PC: [0.99656159 0.27300793 0.46210323]
+SE: [0.93451454 0.28035656 0.7430662 ]
+SP: [0.9785089030765165, 0.9661830102158859, 0.9174506261755603]
+F1: [0.96454125 0.27663345 0.56983405]
+Training: MIoU: 0.4968, MDSC: 0.6299, MPC: 0.5772, AC: 0.8895, MSE: 0.6526, MSP: 0.9540, MF1: 0.6037
+-------------------------------------- Validation 27 ------------------------------------
+Confusion Matrix:
+[[278879855    253346  18100581]
+ [  2143872     33316  10622717]
+ [  5555440     38285  19392620]]
+IoU: [0.9145608  0.00254485 0.36106403]
+DSC: [0.955374   0.00507678 0.53056141]
+PC: [0.97313373 0.10252749 0.40303959]
+SE: [0.93825087 0.00260283 0.77612872]
+SP: [0.79624037844454, 0.999094932390738, 0.9073542676025396]
+F1: [0.955374   0.00507678 0.53056141]
+Training: MIoU: 0.4261, MDSC: 0.4970, MPC: 0.4929, AC: 0.8904, MSE: 0.5723, MSP: 0.9009, MF1: 0.4970
+-------------------------------------- Training 28 --------------------------------------
+Training: Epoch[028/030] Iteration[100/668] Loss: 0.0661 
+Training: Epoch[028/030] Iteration[200/668] Loss: 0.0664 
+Training: Epoch[028/030] Iteration[300/668] Loss: 0.0664 
+Training: Epoch[028/030] Iteration[400/668] Loss: 0.0661 
+Training: Epoch[028/030] Iteration[500/668] Loss: 0.0663 
+Training: Epoch[028/030] Iteration[600/668] Loss: 0.0667 
+Confusion Matrix:
+[[1141092723   16772682   59817680]
+ [    753045   17017976   42912938]
+ [   2735870   27082061   92188273]]
+IoU: [0.93442424 0.16279115 0.41020547]
+DSC: [1.04143383 0.28000068 0.58176695]
+PC: [0.9969518  0.27956655 0.4729571 ]
+SE: [0.93710156 0.28043615 0.75560316]
+SP: [0.9809025568607107, 0.9672649894568203, 0.9196391846284172]
+F1: [0.96610063 0.28000068 0.58176695]
+Training: MIoU: 0.5025, MDSC: 0.6344, MPC: 0.5832, AC: 0.8928, MSE: 0.6577, MSP: 0.9559, MF1: 0.6093
+-------------------------------------- Validation 28 ------------------------------------
+Confusion Matrix:
+[[276149592    904329  20179861]
+ [  2400553    176546  10222806]
+ [  6066070    200162  18720113]]
+IoU: [0.90333407 0.01269714 0.33797521]
+DSC: [0.94921232 0.02507588 0.50520399]
+PC: [0.97025249 0.13781491 0.38108822]
+SE: [0.9290653  0.01379276 0.74921374]
+SP: [0.7759337589731714, 0.9965722470216766, 0.9019375368715981]
+F1: [0.94921232 0.02507588 0.50520399]
+Training: MIoU: 0.4180, MDSC: 0.4932, MPC: 0.4964, AC: 0.8807, MSE: 0.5640, MSP: 0.8915, MF1: 0.4932
+-------------------------------------- Training 29 --------------------------------------
+Training: Epoch[029/030] Iteration[100/668] Loss: 0.0659 
+Training: Epoch[029/030] Iteration[200/668] Loss: 0.0660 
+Training: Epoch[029/030] Iteration[300/668] Loss: 0.0658 
+Training: Epoch[029/030] Iteration[400/668] Loss: 0.0661 
+Training: Epoch[029/030] Iteration[500/668] Loss: 0.0661 
+Training: Epoch[029/030] Iteration[600/668] Loss: 0.0660 
+Confusion Matrix:
+[[1146669461   16586612   54427012]
+ [    737374   16305330   43641255]
+ [   2352173   26695206   92958825]]
+IoU: [0.93929814 0.15683363 0.42239713]
+DSC: [1.03844472 0.27114293 0.59392292]
+PC: [0.99731287 0.27363837 0.48662639]
+SE: [0.94168136 0.26869259 0.76191884]
+SP: [0.9830885968392288, 0.9676926445890246, 0.9232862991421109]
+F1: [0.96869906 0.27114293 0.59392292]
+Training: MIoU: 0.5062, MDSC: 0.6345, MPC: 0.5859, AC: 0.8969, MSE: 0.6574, MSP: 0.9580, MF1: 0.6113
+-------------------------------------- Validation 29 ------------------------------------
+Confusion Matrix:
+[[275787394  16253544   5192844]
+ [   782452  11674111    343342]
+ [  2843378  20902168   1240799]]
+IoU: [0.91666473 0.23368966 0.0406519 ]
+DSC: [0.95652068 0.37884675 0.07812777]
+PC: [0.98702341 0.23907748 0.18309012]
+SE: [0.92784673 0.91204669 0.04965908]
+SP: [0.9040436666776936, 0.8846884198515631, 0.9821432759337536]
+F1: [0.95652068 0.37884675 0.07812777]
+Training: MIoU: 0.3970, MDSC: 0.4712, MPC: 0.4697, AC: 0.8617, MSE: 0.6299, MSP: 0.9236, MF1: 0.4712
+-------------------------------------- Training 30 --------------------------------------
+Training: Epoch[030/030] Iteration[100/668] Loss: 0.0657 
+Training: Epoch[030/030] Iteration[200/668] Loss: 0.0658 
+Training: Epoch[030/030] Iteration[300/668] Loss: 0.0660 
+Training: Epoch[030/030] Iteration[400/668] Loss: 0.0662 
+Training: Epoch[030/030] Iteration[500/668] Loss: 0.0658 
+Training: Epoch[030/030] Iteration[600/668] Loss: 0.0661 
+Confusion Matrix:
+[[1148741685   16088982   52852418]
+ [    662476   16987022   43034461]
+ [   2163530   25751562   94091112]]
+IoU: [0.94119879 0.16568744 0.43182239]
+DSC: [1.0372679  0.28427421 0.60317871]
+PC: [0.99754595 0.28875956 0.49527375]
+SE: [0.94338313 0.27992607 0.77119941]
+SP: [0.9845311539844649, 0.968768471657162, 0.9249926854340904]
+F1: [0.96970882 0.28427421 0.60317871]
+Training: MIoU: 0.5129, MDSC: 0.6416, MPC: 0.5939, AC: 0.8996, MSE: 0.6648, MSP: 0.9594, MF1: 0.6191
+-------------------------------------- Validation 30 ------------------------------------
+Confusion Matrix:
+[[279096564  10297155   7840063]
+ [   845947  11145601    808357]
+ [  2954092  19201376   2830877]]
+IoU: [0.92712694 0.26349913 0.08416521]
+DSC: [0.96218564 0.41709428 0.1552627 ]
+PC: [0.98656739 0.27422411 0.24660717]
+SE: [0.93897996 0.87075654 0.11329696]
+SP: [0.8994332859174965, 0.9084522395461659, 0.9721049022650239]
+F1: [0.96218564 0.41709428 0.1552627 ]
+Training: MIoU: 0.4249, MDSC: 0.5115, MPC: 0.5025, AC: 0.8748, MSE: 0.6410, MSP: 0.9267, MF1: 0.5115
+
+Process finished with exit code 0
